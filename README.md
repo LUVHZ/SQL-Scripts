@@ -1,4 +1,4 @@
-# SQL-Scripts
+# SQL-server Admin
 
 A comprehensive collection of production-grade SQL Server scripts for database administration, performance tuning, and troubleshooting.
 
