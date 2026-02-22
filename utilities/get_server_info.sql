@@ -158,3 +158,83 @@ PRINT '=== SQL AGENT JOBS ===';
 SELECT 
     'Check SQL Server Agent for job history'
     FROM (SELECT 1) AS t;
+
+-- ============================================================================
+-- 10. MAXDOP SETTINGS
+-- ============================================================================
+PRINT '=== MAXDOP (Max Degree of Parallelism) SETTINGS ===';
+
+SELECT 
+    'Max Degree of Parallelism' AS [Configuration],
+    CAST(c.value AS VARCHAR(10)) AS [ConfiguredValue],
+    CAST(c.value_in_use AS VARCHAR(10)) AS [CurrentValue],
+    CASE 
+        WHEN c.value = 0 THEN 'Unlimited (uses all available CPUs)'
+        WHEN c.value = 1 THEN 'Single-threaded (no parallelism)'
+        ELSE c.value + ' CPUs maximum per query'
+    END AS [Description],
+    c.description AS [ConfigDescription]
+FROM sys.configurations c
+WHERE c.name = 'max degree of parallelism'
+
+UNION ALL
+
+SELECT 
+    'Cost Threshold for Parallelism',
+    CAST(c.value AS VARCHAR(10)),
+    CAST(c.value_in_use AS VARCHAR(10)),
+    'Estimated query cost must exceed this value to consider parallelism',
+    c.description
+FROM sys.configurations c
+WHERE c.name = 'cost threshold for parallelism';
+
+-- ============================================================================
+-- 11. ACTIVE CONNECTIONS AND SESSIONS
+-- ============================================================================
+PRINT '=== TOTAL CONNECTIONS AND ACTIVE SESSIONS ===';
+
+SELECT 
+    'Total Active Connections' AS [Metric],
+    CAST(COUNT(*) AS VARCHAR(10)) AS [Count],
+    'All active sessions connected to SQL Server' AS [Description]
+FROM sys.dm_exec_sessions
+WHERE status = 'running'
+
+UNION ALL
+
+SELECT 
+    'Total Idle Sessions',
+    CAST(COUNT(*) AS VARCHAR(10)),
+    'Connected sessions not currently executing'
+FROM sys.dm_exec_sessions
+WHERE status = 'sleeping'
+
+UNION ALL
+
+SELECT 
+    'Total Sessions (All States)',
+    CAST(COUNT(*) AS VARCHAR(10)),
+    'All sessions including network and internal'
+FROM sys.dm_exec_sessions
+
+UNION ALL
+
+SELECT 
+    'User Sessions',
+    CAST(COUNT(*) AS VARCHAR(10)),
+    'Sessions from user connections (excluding system processes)'
+FROM sys.dm_exec_sessions
+WHERE session_id > 50;
+
+-- Detailed connection information by database
+PRINT '--- CONNECTIONS BY DATABASE ---';
+
+SELECT 
+    DB_NAME(database_id) AS [Database],
+    COUNT(*) AS [ConnectionCount],
+    COUNT(DISTINCT login_name) AS [UniqueLogins],
+    STRING_AGG(DISTINCT login_name, ', ') AS [LoginNames]
+FROM sys.dm_exec_sessions
+WHERE database_id > 0
+GROUP BY database_id
+ORDER BY COUNT(*) DESC;
