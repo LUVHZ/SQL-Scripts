@@ -13,7 +13,7 @@ Administrative tasks for managing SQL Server instances and databases.
 - **`database_mail_setup.sql`** - Configure Database Mail for alerts and notifications
 - **`maintenance_jobs_setup.sql`** - Create and manage scheduled maintenance jobs (backups, index rebuilds, stats)
 
-### 📁 `performance-tuning/`
+### 📁 `performance-tuning`
 Query optimization and index management for maintaining database performance.
 
 - **`missing_indexes.sql`** - Identify missing indexes from query execution history; generate CREATE INDEX statements
