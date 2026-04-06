@@ -20,7 +20,7 @@ Query optimization and index management for maintaining database performance.
 - **`index_fragmentation.sql`** - Analyze, reorganize, and rebuild fragmented indexes
 - **`table_statistics.sql`** - Update table statistics to maintain query optimizer effectiveness
 
-### 📁 `troubleshooting/`
+### 📁 `troubleshooting`
 Diagnostic scripts for investigating database issues and anomalies.
 
 - **`diagnose_blocking_queries.sql`** - Identify blocking sessions and their executing commands in real-time
