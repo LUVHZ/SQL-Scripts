@@ -4,7 +4,7 @@ A comprehensive collection of production-grade SQL Server scripts for database a
 
 ## 📋 Contents
 
-### 📁 `administration/`
+### 📁 `administration`
 Administrative tasks for managing SQL Server instances and databases.
 
 - **`user_management.sql`** - Create and manage SQL Server logins, database users, and permission management
